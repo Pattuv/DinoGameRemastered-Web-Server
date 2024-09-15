@@ -22,7 +22,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         return mime_type
 
 # Open the default web browser to the server's address (local access)
-webbrowser.open(f'http://localhost:{PORT}/')
+webbrowser.open(f'http://localhost:{PORT}/game/')
 
 # Run the server (external access)
 handler = MyHttpRequestHandler
