@@ -1,10 +1,8 @@
-import os
 import webbrowser
 import http.server
 import socketserver
 
 PORT = 8080  # Or any other available port
-GAME_DIR = "game"  # Directory where your Godot game files are stored
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
@@ -23,14 +21,8 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             return "application/octet-stream"
         return mime_type
 
-    def do_GET(self):
-        # Redirect root URL to index.html in the game directory
-        if self.path == '/':
-            self.path = f'/{GAME_DIR}/index.html'
-        return super().do_GET()
-
 # Open the default web browser to the server's address (local access)
-webbrowser.open(f'http://localhost:{PORT}/')
+webbrowser.open(f'http://localhost:{PORT}/game/')
 
 # Run the server (external access)
 handler = MyHttpRequestHandler
