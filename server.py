@@ -1,32 +1,25 @@
-import webbrowser
 import http.server
 import socketserver
 
 PORT = 8080  # Or any other available port
+DIRECTORY = "game"  # Directory with your exported Godot game
 
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
-        # Add CORS and cross-origin headers for game compatibility
+        # Add required headers for Cross-Origin Isolation and SharedArrayBuffer
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cross-Origin-Opener-Policy", "same-origin")
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
         super().end_headers()
 
-    def guess_type(self, path):
-        # Serve WebAssembly and Godot PCK files with correct MIME types
-        mime_type = super().guess_type(path)
-        if path.endswith(".wasm"):
-            return "application/wasm"
-        elif path.endswith(".pck"):
-            return "application/octet-stream"
-        return mime_type
+    def translate_path(self, path):
+        # Serve files from the godot_game directory
+        path = super().translate_path(path)
+        return path.replace("/godot_game", DIRECTORY, 1)
 
-# Open the default web browser to the server's address (local access)
-webbrowser.open(f'http://localhost:{PORT}/game/')
-
-# Run the server (external access)
+# Run the server
 handler = MyHttpRequestHandler
-httpd = socketserver.TCPServer(("0.0.0.0", PORT), handler)
+httpd = socketserver.TCPServer(("0.0.0.0", PORT), handler)  # Bind to all network interfaces
 
 try:
     print(f"Serving on port {PORT}")
